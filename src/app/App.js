@@ -1,35 +1,46 @@
 import './App.css';
 import { BrowserRouter as Router, Route,Switch} from "react-router-dom";
-import { Home, Login,Panel } from './views';
-import { Provider } from 'react-redux';
+import { Home, Login,Panel,PrivatePage } from './views';
+import { Provider, useDispatch } from 'react-redux';
 import store from './store';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import api from './services/api';
+import { getMyAction, loginSuccessAction } from './store/actions/authAction';
 function App() {
+  const dispatch = useDispatch()
+  const [loading,setLoading] = useState(true)
   useEffect(()=>{
     let access = localStorage.getItem("access")
     if(access){
         api.defaults.headers.common['Authorization'] = "Bearer "+access;
-    }
+        dispatch(loginSuccessAction())
+        dispatch(getMyAction())
+    };
+    setTimeout(()=>{
+      setLoading(false)
+    },2000);
+
 },[])
   return (
-    <Provider store={store}>
     <div className="App">
+      {loading?<h1>Loading</h1>:
       <Router>
         <Switch>
           <Route exact path="/login" >
             <Login/>
           </Route>
           <Route path="/panel">
-          <Panel></Panel>
+            <PrivatePage>
+              <Panel></Panel>
+            </PrivatePage>
+          
           </Route>
           <Route path="/" >
             <Home/>
           </Route>
         </Switch>
-      </Router>
+      </Router>}
     </div>
-    </Provider>
   );
 }
 
