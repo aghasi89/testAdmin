@@ -1,6 +1,6 @@
 import api from ".."
 
-export const loginRequest = async  (username,password)=>{
+export const loginRequest = async (username,password)=>{
     try {
         const responce = await api.post("login/login/",{
             username,
@@ -8,7 +8,7 @@ export const loginRequest = async  (username,password)=>{
         })
         return responce.data
     } catch (error) {
-        if( error.response ){
+        if( error.response){
             throw error.response.data; // => the response payload 
         }
         throw error
